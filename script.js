@@ -10,18 +10,29 @@
   var toggle = document.querySelector(".nav-toggle");
   var nav = document.getElementById("gnav");
   if (toggle && nav) {
+    var closeMenu = function () {
+      nav.classList.remove("is-open");
+      toggle.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "メニューを開く");
+    };
     toggle.addEventListener("click", function () {
       var open = nav.classList.toggle("is-open");
       toggle.classList.toggle("is-open", open);
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.setAttribute("aria-label", open ? "メニューを閉じる" : "メニューを開く");
     });
-    // メニュー内リンクで閉じる
     nav.querySelectorAll("a").forEach(function (a) {
-      a.addEventListener("click", function () {
-        nav.classList.remove("is-open");
-        toggle.classList.remove("is-open");
-        toggle.setAttribute("aria-expanded", "false");
-      });
+      a.addEventListener("click", closeMenu);
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && nav.classList.contains("is-open")) {
+        closeMenu();
+        toggle.focus();
+      }
+    });
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 1080) closeMenu();
     });
   }
 
@@ -38,12 +49,23 @@
   });
 
   /* ---------- FAQ アコーディオン ---------- */
-  document.querySelectorAll(".faq__q").forEach(function (q) {
+  document.querySelectorAll(".faq__q").forEach(function (q, index) {
+    var item = q.closest(".faq__item");
+    var answer = item ? item.querySelector(".faq__a") : null;
+    if (!item || !answer) return;
+    var questionId = "faq-question-" + (index + 1);
+    var answerId = "faq-answer-" + (index + 1);
+    q.type = "button";
+    q.id = questionId;
+    q.setAttribute("aria-controls", answerId);
+    answer.id = answerId;
+    answer.setAttribute("role", "region");
+    answer.setAttribute("aria-labelledby", questionId);
+    answer.setAttribute("aria-hidden", "true");
     q.addEventListener("click", function () {
-      var item = q.closest(".faq__item");
-      var answer = item.querySelector(".faq__a");
       var isOpen = item.classList.toggle("is-open");
       q.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      answer.setAttribute("aria-hidden", isOpen ? "false" : "true");
       if (isOpen) {
         answer.style.maxHeight = answer.scrollHeight + "px";
       } else {
@@ -67,10 +89,12 @@
       if (msg) {
         msg.classList.add("is-visible");
         msg.setAttribute("role", "status");
+        msg.setAttribute("aria-live", "polite");
       }
       form.reset();
       if (msg && typeof msg.scrollIntoView === "function") {
-        msg.scrollIntoView({ behavior: "smooth", block: "center" });
+        var reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        msg.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" });
       }
     });
   }
