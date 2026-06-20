@@ -224,7 +224,7 @@ a:hover { text-decoration: underline; }
 .hours-float {
   background: #fff; border-radius: var(--radius); box-shadow: var(--shadow);
   border: 1px solid var(--gray-line); padding: 20px 22px;
-  position: absolute; right: -8px; bottom: -28px; width: min(330px, 86%);
+  width: 100%; margin-top: 20px;
 }
 .hours-float h3 { margin: 0 0 10px; font-size: .95rem; color: var(--navy); display: flex; align-items: center; gap: 8px; }
 .hours-float h3 .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--teal); }
@@ -357,21 +357,23 @@ a:hover { text-decoration: underline; }
    ======================================================== */
 .steps { list-style: none; counter-reset: step; margin: 0; padding: 0; display: grid; gap: 16px; }
 .steps li {
-  display: grid; grid-template-columns: 56px 1fr; gap: 18px; align-items: flex-start;
+  display: grid; grid-template-columns: 56px minmax(0, 1fr); column-gap: 18px; row-gap: 4px; align-items: start;
   background: #fff; border: 1px solid var(--gray-line); border-radius: var(--radius); padding: 20px 22px;
   position: relative;
 }
 .steps li::before {
   counter-increment: step; content: counter(step);
+  grid-column: 1; grid-row: 1 / span 2; align-self: start;
   width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
   background: var(--navy); color: #fff; font-weight: 700; font-family: var(--serif); font-size: 1.1rem;
 }
-.steps li h4 { margin: 0 0 4px; color: var(--navy); font-size: 1.02rem; }
-.steps li p { margin: 0; color: var(--ink-soft); font-size: .9rem; }
+.steps li h4 { grid-column: 2; align-self: start; margin: 0; color: var(--navy); font-size: 1.02rem; }
+.steps li p { grid-column: 2; min-width: 0; margin: 0; color: var(--ink-soft); font-size: .9rem; line-height: 1.7; }
 .steps--row { grid-template-columns: repeat(3, 1fr); }
 @media (min-width: 781px) {
   .steps--row li { grid-template-columns: 1fr; text-align: center; }
-  .steps--row li::before { margin: 0 auto 8px; }
+  .steps--row li::before { grid-column: 1; grid-row: auto; margin: 0 auto 8px; }
+  .steps--row li h4, .steps--row li p { grid-column: 1; align-self: auto; }
 }
 
 /* ========================================================
@@ -473,6 +475,11 @@ a:hover { text-decoration: underline; }
    FAQ アコーディオン
    ======================================================== */
 .faq { display: grid; gap: 14px; }
+.faq-category {
+  margin: 28px 0 2px; padding: 0 0 10px 14px; border-left: 4px solid var(--teal);
+  border-bottom: 1px solid var(--green-line); color: var(--navy); font-size: 1.22rem;
+}
+.faq-category:first-child { margin-top: 0; }
 .faq__item { background: #fff; border: 1px solid var(--gray-line); border-radius: var(--radius); overflow: hidden; }
 .faq__q {
   width: 100%; text-align: left; background: none; border: 0; cursor: pointer;
@@ -528,6 +535,29 @@ a:hover { text-decoration: underline; }
 .contact-card h3 { margin: 0 0 4px; color: var(--navy); font-size: 1rem; }
 .contact-card .tel { font-size: 1.5rem; font-weight: 800; color: var(--teal-deep); letter-spacing: .03em; font-variant-numeric: tabular-nums; }
 .contact-card p { margin: 4px 0 0; font-size: .85rem; color: var(--ink-soft); }
+
+/* 外来担当・健診比較（PCは表、スマホはカード） */
+.schedule-list, .comparison-list { border: 1px solid var(--gray-line); border-radius: var(--radius); overflow: hidden; background: #fff; }
+.schedule-row { display: grid; grid-template-columns: 1.3fr 1.2fr 1fr; }
+.comparison-list { margin-top: 30px; }
+.comparison-row { display: grid; grid-template-columns: 1.05fr 1.35fr 1.65fr .7fr .9fr; }
+.schedule-row > *, .comparison-row > * { min-width: 0; padding: 14px 16px; border-bottom: 1px solid var(--gray-line); color: var(--ink-soft); font-size: .9rem; overflow-wrap: anywhere; }
+.schedule-row > * + *, .comparison-row > * + * { border-left: 1px solid var(--gray-line); }
+.schedule-row:last-child > *, .comparison-row:last-child > * { border-bottom: 0; }
+.schedule-row strong, .comparison-row strong { color: var(--navy); background: var(--gray-bg); }
+.schedule-head, .comparison-head { background: var(--navy); }
+.schedule-head span, .comparison-head span { color: #fff; border-color: rgba(255,255,255,.18); font-weight: 700; }
+.demo-note { margin: 14px 0 0; color: var(--ink-soft); font-size: .82rem; }
+
+/* 募集要項 */
+.job-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.job-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--gray-line); border-top: 4px solid var(--teal); border-radius: var(--radius); padding: 26px; box-shadow: var(--shadow-sm); }
+.job-card h3 { margin: 0 0 16px; color: var(--navy); font-size: 1.2rem; }
+.job-card dl { margin: 0 0 22px; display: grid; gap: 12px; }
+.job-card dl div { display: grid; grid-template-columns: 7em 1fr; gap: 10px; }
+.job-card dt { color: var(--teal-deep); font-weight: 700; font-size: .86rem; }
+.job-card dd { margin: 0; color: var(--ink-soft); font-size: .88rem; }
+.job-card .btn { margin-top: auto; align-self: flex-start; }
 
 /* アクセス地図風プレースホルダー */
 .map-frame { border-radius: var(--radius); overflow: hidden; min-height: 280px; border: 1px solid var(--gray-line);
@@ -615,6 +645,15 @@ a:hover { text-decoration: underline; }
   .steps--row { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
+  .job-grid { grid-template-columns: 1fr; }
+  .schedule-list, .comparison-list { border: 0; overflow: visible; background: transparent; display: grid; gap: 14px; }
+  .schedule-head, .comparison-head { display: none; }
+  .schedule-row, .comparison-row { display: grid; grid-template-columns: 1fr; background: #fff; border: 1px solid var(--gray-line); border-radius: 12px; overflow: hidden; }
+  .schedule-row > *, .comparison-row > * { padding: 11px 16px; border: 0; border-bottom: 1px solid var(--gray-line); }
+  .schedule-row > * + *, .comparison-row > * + * { border-left: 0; }
+  .schedule-row strong, .comparison-row strong { padding: 14px 16px; }
+  .schedule-row span::before, .comparison-row span::before { content: attr(data-label); display: inline-block; min-width: 7em; margin-right: 8px; color: var(--teal-deep); font-weight: 700; font-size: .78rem; }
+  .schedule-row > *:last-child, .comparison-row > *:last-child { border-bottom: 0; }
   .cta-band { padding: 34px 22px; }
   .form-card { padding: 24px; }
   .news-list li { grid-template-columns: 1fr; gap: 6px; padding: 14px 4px; }
@@ -629,6 +668,12 @@ a:hover { text-decoration: underline; }
 }
 
 @media (max-width: 420px) {
+  .wrap { width: min(var(--wrap), 90%); }
+  .topbar { font-size: .72rem; }
+  .header-inner { min-height: 64px; }
+  .brand__name { font-size: 1rem; }
+  .card, .job-card, .contact-card { padding: 20px; }
+  .job-card dl div { grid-template-columns: 1fr; gap: 2px; }
   .btn { width: 100%; }
   .btn-row .btn { flex: 1 1 100%; }
 }
